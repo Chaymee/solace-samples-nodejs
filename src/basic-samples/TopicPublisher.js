@@ -109,11 +109,14 @@ var TopicPublisher = function (solaceModule, topicName) {
     // Publishes one message
     publisher.publish = function () {
         if (publisher.session !== null) {
-            var messageText = 'Sample Message';
+            var myObj = {"name":"John", "age":30, "car":null}
+            //var messageText = 'Sample Message';
+            var messageText = JSON.stringify(myObj);
+            console.log(messageText);
             var message = solace.SolclientFactory.createMessage();
             message.setDestination(solace.SolclientFactory.createTopicDestination(publisher.topicName));
             message.setBinaryAttachment(messageText);
-            message.setDeliveryMode(solace.MessageDeliveryModeType.DIRECT);
+            message.setDeliveryMode(solace.MessageDeliveryModeType.PERSISTENT);
             publisher.log('Publishing message "' + messageText + '" to topic "' + publisher.topicName + '"...');
             try {
                 publisher.session.send(message);
